@@ -56,11 +56,9 @@
 
 ## Section 4: Exploratory Data Analysis
 
-> TBD
->
-> **Analysis:** TBD
->
-> **Reflection:** TBD
+> **User Story 1**:
+> ![Co-op housing projects built over time](../img/userstory1.png)
+> The graph shows that the number of projects built over time has been declining. This might explain why it is difficult to find housing.
 
 ## Section 5: App Sketch & Description
 
