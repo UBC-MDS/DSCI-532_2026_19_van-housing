@@ -1,42 +1,23 @@
-# Contributing to [Project Name]
+# Contributing to the  van-housing Dashboard
 
-## Getting Started
+This outlines how to propose a change to the Non-market Housing Dashboard. 
 
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/repo.git`
-3. Create a feature branch: `git checkout -b feature/your-feature`
+### Prerequisites
 
-## Development Setup
+Before you make a substantial pull request, you should always file an issue and
+make sure someone from the team agrees that it's a problem. If you've found a
+bug, create an associated issue.
 
-```bash
-# Install dependencies
-pip install -r requirements.txt
+### Pull request process
 
-# Run tests
-pytest
-```
+*  We recommend that you create a Git branch for each pull request (PR).  
+*  New code should follow the PEP8 [style guide](https://www.python.org/dev/peps/pep-0008/).
 
-## Guidelines
+### Code of Conduct
 
-- Follow [PEP 8](https://pep8.org/) for Python code
-- Write clear commit messages
-- Add tests for new features
-- Update documentation as needed
+Please note that this project is released with a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to
+abide by its terms.
 
-## Submitting Changes
-
-1. Push to your branch: `git push origin feature/your-feature`
-2. Create a Pull Request with a clear description
-3. Link any related issues
-
-## Code Review
-
-- A maintainer will review your PR
-- Address feedback promptly
-- Approved PRs will be merged
-
-## Questions?
-
-Open an issue or contact the maintainers.
-
-Thank you for contributing!
+### Attribution
+These contributing guidelines were adapted from the [dplyr contributing guidelines](https://github.com/tidyverse/dplyr/blob/master/.github/CONTRIBUTING.md) and the [Breast Cancer Predictor Project](https://github.com/ttimbers/breast_cancer_predictor/blob/master/CONTRIBUTING.md).
