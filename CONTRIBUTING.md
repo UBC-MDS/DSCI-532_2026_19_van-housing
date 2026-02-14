@@ -1,6 +1,6 @@
 # Contributing to the  van-housing Dashboard
 
-This outlines how to propose a change to the Non-market Housing Dashboard. 
+This outlines how to propose a change to the van-housing Dashboard. 
 
 ### Prerequisites
 
