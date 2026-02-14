@@ -1,9 +1,10 @@
 ## Section 1: Motivation and Purpose
 
 > **Our role:** Data Analytics and Reporting Team for City of Vancouver
+>
 > **Target audience:** Vancouver residents seeking to explore and better understand affordable housing options
 >
-> Rising housing costs remain a significant and ongoing challenge in Vancouver. Non-market housing offers critical affordable alternatives for residents, yet the overall landscape of these options is not clearly organized or easily accessible. This dashboard aims to close >  > that gap by delivering clear, structured insights into non-market housing across the city — including building types, management models, > resident demographics, unit composition, and neighbourhood distribution.
+> Rising housing costs remain a significant and ongoing challenge in Vancouver. Non-market housing offers critical affordable alternatives for residents, yet the overall landscape of these options is not clearly organized or easily accessible. This dashboard aims to close that gap by delivering clear, structured insights into non-market housing across the city — including building types, management models, resident demographics, unit composition, and neighbourhood distribution.
 
 ## Section 2: Description of the Data
 
@@ -56,13 +57,13 @@
 
 ## Section 4: Exploratory Data Analysis
 
-> **User Story 1**:
+> **User Story 1: Understand supply of housing**
 > ![Co-op housing projects built over time](../img/userstory1.png)
 > The graph shows that the number of projects built over time has been declining. This might explain why it is difficult to find housing.
 
 ## Section 5: App Sketch & Description
 
-![Dashboard](sketch.png "App Sketch")
+![Dashboard](../img/sketch.png "App Sketch")
 
 > The dashboard interface is designed to minimize unnecessary clicks and present key insights at a glance. On the left side are all filter controls (dropdowns and sliders), which will dynamically update the three main visualizations. Users can combine filters to explore specific housing types, operators, demographics, and time ranges.
 

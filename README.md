@@ -10,3 +10,19 @@ This dashboard visualizes non-market housing in Vancouver using publicly availab
 - Claudia Liauw
 - Jimmy Wang
 - Sidharth Malik
+
+## Development setup
+To set up the development environment, clone the repository and create the conda environment using the provided `environment.yml` file:
+```bash
+git clone https://github.com/UBC-MDS/UBC-MDS-DSCI-532_2026_19_van-housing.git
+cd UBC-MDS-DSCI-532_2026_19_van-housing
+conda env create -f environment.yml
+conda activate 532-gp19
+```
+
+## Run dashboard
+To run dashboard locally, follow these commands:
+```bash
+cd src
+shiny run app.py
+```
