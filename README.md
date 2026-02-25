@@ -1,4 +1,4 @@
-# UBC-MDS-DSCI-532_2026_19_van-housing
+# DSCI-532_2026_19_van-housing
 
 ## Vancouver Non-Market Housing Dashboard
 
