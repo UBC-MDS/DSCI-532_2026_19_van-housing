@@ -1,5 +1,6 @@
 from shiny import App, ui, reactive
 import pandas as pd
+from datetime import date
 
 data = pd.read_csv('../data/raw/non-market-housing.csv', sep=';')
 
@@ -23,9 +24,30 @@ app_ui = ui.page_fillable(
     ui.panel_title("Title"),
     ui.page_sidebar(
         ui.sidebar(
-            ui.card("Card 1"),
-            ui.card("Card 2"),
-            ui.card("Card 3"),
+            ui.input_radio_buttons(
+                "clientele",
+                "Clientele",
+                ["Families", "Seniors", "Mixed"]
+            ),
+            ui.input_selectize(
+                "br",
+                "Bedrooms",
+                ["1BR", "2BR", "3BR", "4BR"],
+                multiple=True
+            ),
+            ui.input_selectize(
+                "accessible",
+                "Accessibility",
+                ["Standard", "Adaptable", "Accessible"],
+                multiple=True
+            ),
+            ui.input_slider(
+                "year",
+                "Year",
+                min=date(1971, 1, 1), max=date(2025, 12, 31),
+                value=[date(1971, 1, 1), date(2025, 12, 31)],
+                time_format='%Y'
+            )
         ),
         ui.layout_columns(
             ui.card("Card 1"),
