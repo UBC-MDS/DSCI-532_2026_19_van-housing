@@ -61,7 +61,18 @@ app_ui = ui.page_fillable(
 def server(input, output, session):
     @reactive.calc
     def df():
-        return data
+        clientele = input.clientele()
+        br_list = [i + " Available" for i in input.br()]
+        access_list = [i + " Available" for i in input.accessibility()]
+        years = input.year()
+        filtered_data = data[
+            (data.Clientele == clientele) &
+            (data[br_list] > 0).any(axis=1) &
+            (data[access_list] > 0).any(axis=1) &
+            (data['Occupancy Year'] >= years[0].year) &
+            (data['Occupancy Year'] <= years[1].year)
+        ]
+        return filtered_data
 
 
 app = App(app_ui, server=server)
