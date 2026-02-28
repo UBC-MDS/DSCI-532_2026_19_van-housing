@@ -49,6 +49,7 @@ app_ui = ui.page_fillable(
     ui.p("Below are the buildings that match your selections.", style="text-align:center; margin-top:-8px; font-size: 24px; color:#666;"),
     ui.page_sidebar(
         ui.sidebar(
+            ui.h4("Filters"),
             ui.input_radio_buttons(
                 "clientele",
                 "Clientele",
