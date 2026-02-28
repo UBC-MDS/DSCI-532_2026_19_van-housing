@@ -73,6 +73,12 @@ app_ui = ui.page_fillable(
                 min=date(1971, 1, 1), max=date(2025, 12, 31),
                 value=[date(1971, 1, 1), date(2025, 12, 31)],
                 time_format='%Y'
+            ),
+            ui.input_action_button(
+                "reset",
+                "Reset Filters",
+                class_="btn btn-secondary",
+                style="margin-top: 15px; width: 100%;"
             )
         ),
         ui.div(
@@ -94,6 +100,7 @@ app_ui = ui.page_fillable(
                         background: linear-gradient(135deg, #6c5ce7, #a29bfe);
                         border-radius: 15px;
                         padding: 25px;
+                        height: 200px; 
                         box-shadow: 0 6px 15px rgba(0,0,0,0.08);
                     """
                 ),
@@ -104,7 +111,7 @@ app_ui = ui.page_fillable(
                         ui.output_table("building_table"),
                         style="""
                             width: 100%;
-                            max-height: 350px;
+                            max-height: 240px;
                             overflow-y: auto;
                             background-color: #ffffff;
                             padding: 10px;
@@ -126,7 +133,7 @@ app_ui = ui.page_fillable(
                 ui.h4("Map"),
                 ui.div(
                     output_widget("map"),
-                    style="height: 60vh;"
+                    style="height: 50vh;"
                 ),
                 style="""
                     margin-top: 20px;
@@ -233,7 +240,7 @@ def server(input, output, session):
 
         if token:
             px.set_mapbox_access_token(token)
-            map_style = "light"
+            map_style = "streets"
         else:
             map_style = "open-street-map"
 
@@ -246,7 +253,7 @@ def server(input, output, session):
                 center=default_center,
             )
             fig.update_traces(marker={"size": 1, "opacity": 0.0}, hoverinfo="skip")
-            fig.update_layout(mapbox_style="light", margin=dict(l=0, r=0, t=0, b=0), height=600)
+            fig.update_layout(mapbox_style=map_style, margin=dict(l=0, r=0, t=0, b=0), height=600)
             return fig
 
         lon_min, lon_max = d["lon"].min(), d["lon"].max()
@@ -264,9 +271,31 @@ def server(input, output, session):
             center=center,
         )
         fig.update_traces(marker={"size": 9, "opacity": 0.75})
-        fig.update_layout(mapbox_style="light", margin=dict(l=0, r=0, t=0, b=0), autosize=True)
+        fig.update_layout(mapbox_style=map_style, margin=dict(l=0, r=0, t=0, b=0), autosize=True)
         return fig
     
+    @reactive.effect
+    @reactive.event(input.reset)
+    def _():
+        ui.update_radio_buttons(
+            "clientele",
+            selected="Families"
+        )
+
+        ui.update_selectize(
+            "br",
+            selected=[]
+        )
+
+        ui.update_selectize(
+            "accessible",
+            selected=[]
+        )
+
+        ui.update_slider(
+            "year",
+            value=[date(1971, 1, 1), date(2025, 12, 31)]
+        )
 
 # For App Rendering, this line must be at the last
 app = App(app_ui, server=server)
