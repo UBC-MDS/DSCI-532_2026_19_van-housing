@@ -2,6 +2,7 @@ from shiny import App, ui, reactive, render
 import pandas as pd
 from datetime import date
 
+import os
 import json
 import numpy as np
 import plotly.express as px
@@ -227,9 +228,13 @@ def server(input, output, session):
         default_center = {"lat": 49.2827, "lon": -123.1207}
         default_zoom = 10
 
-        # Hardcode your token
-        token = "pk.eyJ1Ijoid2lsbGNoaCIsImEiOiJjbWt0N3NrMjIxaWowM2txMjhzOW52cm1zIn0.9S2mMtRvFRS9CgYiwdNqVw"
-        px.set_mapbox_access_token(token)
+        token = os.getenv("MAPBOX_TOKEN")
+
+        if token:
+            px.set_mapbox_access_token(token)
+            map_style = "light"
+        else:
+            map_style = "open-street-map"
 
         if len(d) == 0:
             fig = px.scatter_mapbox(
