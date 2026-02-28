@@ -8,7 +8,7 @@ import numpy as np
 import plotly.express as px
 from shinywidgets import output_widget, render_plotly
 
-data = pd.read_csv('../data/raw/non-market-housing.csv', sep=';')
+data = pd.read_csv('data/raw/non-market-housing.csv', sep=';')
 
 # Data wrangling
 data.rename(columns={'Clientele- Families': 'Clientele - Families'}, inplace=True)
