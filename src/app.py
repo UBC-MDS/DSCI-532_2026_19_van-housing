@@ -45,8 +45,8 @@ app_ui = ui.page_fillable(
             height: 100% !important;
         }
     """),
-    ui.h2("Non-market Housing Dashboard for the City of Vancouver", style="text-align:center; font-weight:700; font-size: 60px"),
-    ui.p("Below are the buildings that match your selections.", style="text-align:center; margin-top:-8px; font-size: 36px; color:#666;"),
+    ui.h2("Non-market Housing Dashboard for the City of Vancouver", style="text-align:center; font-weight:700; font-size: 40px"),
+    ui.p("Below are the buildings that match your selections.", style="text-align:center; margin-top:-8px; font-size: 24px; color:#666;"),
     ui.page_sidebar(
         ui.sidebar(
             ui.input_radio_buttons(
