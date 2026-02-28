@@ -8,7 +8,7 @@
 | 2 | When I select filters, I want to see a summary metric so I can quickly understand total matching buildings. | Implemented | Value card shows count |
 | 3 | When I explore filtered data, I want to see building-level details in a table so I can inspect specific projects. | Implemented | Table added |
 | 4 | When I want to explore projects for a specific client type, I want to filter by clientele type so I can focus on relevant buildings. | Implemented | Added `input_client_type` |
-| 5 | When I want to explore filtered data geographically, I want to see building locations on a map so I can understand spatial distribution. | ⏳ Pending M3 | Map enhancements planned |
+| 5 | When I want to explore filtered data geographically, I want to see building locations on a map so I can understand spatial distribution. | Pending M3 | Map enhancements planned |
 | 6 | When I explore filtered data over time, I want to filter by occupancy year so I can see trends in new developments. | Implemented | Added `input_year` slider |
 
 ---
