@@ -2,6 +2,12 @@ from shiny import App, ui, reactive, render
 import pandas as pd
 from datetime import date
 
+import os
+import json
+import numpy as np
+import plotly.express as px
+from shinywidgets import output_widget, render_plotly
+
 data = pd.read_csv('../data/raw/non-market-housing.csv', sep=';')
 
 # Data wrangling
@@ -26,8 +32,21 @@ data['Total Units'] = (
     data['Clientele - Other']
 )
 
+# defining layout
 app_ui = ui.page_fillable(
-    ui.panel_title("Van-housing"),
+    ui.tags.style("""
+        #map, #map > div {
+            height: 100% !important;
+        }
+
+        #map .js-plotly-plot,
+        #map .plot-container,
+        #map .svg-container {
+            height: 100% !important;
+        }
+    """),
+    ui.h2("Non-market Housing Dashboard for the City of Vancouver", style="text-align:center; font-weight:700; font-size: 60px"),
+    ui.p("Below are the buildings that match your selections.", style="text-align:center; margin-top:-8px; font-size: 36px; color:#666;"),
     ui.page_sidebar(
         ui.sidebar(
             ui.input_radio_buttons(
@@ -59,7 +78,7 @@ app_ui = ui.page_fillable(
             ui.layout_columns(
                 # Total Units Card
                 ui.card(
-                    ui.h4("Total Units", style="color: #ffffff; text-align: center; font-weight: 500;"),
+                    ui.h4("Total Buildings Count", style="color: #ffffff; text-align: center; font-weight: 500;"),
                     ui.div(
                         ui.output_text("total_units_card"),
                         style="""
@@ -79,7 +98,7 @@ app_ui = ui.page_fillable(
                 ),
                 # Buildings Table Card
                 ui.card(
-                    ui.h4("Buildings", style="text-align: center; font-weight: 500; color: #2d3436;"),
+                    ui.h4("Buildings Summary", style="text-align: center; font-weight: 500; color: #2d3436;"),
                     ui.div(
                         ui.output_table("building_table"),
                         style="""
@@ -105,16 +124,22 @@ app_ui = ui.page_fillable(
             ui.card(
                 ui.h4("Map"),
                 ui.div(
-                    "Map will go here",
-                    style="height: 400px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center;"
+                    output_widget("map"),
+                    style="height: 60vh;"
                 ),
-                style="margin-top: 20px;"
+                style="""
+                    margin-top: 20px;
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+                """
             )
         )
     )
 )
 
 
+# defining logic and reactivity
 def server(input, output, session):
     @reactive.calc
     def df():
@@ -157,6 +182,90 @@ def server(input, output, session):
             "Occupancy Year"
         ]].sort_values("Occupancy Year")
     
+    @reactive.calc
+    def df_points():
+        """Extract lon/lat from GeoJSON Point stored in 'Geom'."""
+        d = df().copy()
 
+        def parse_point(s):
+            try:
+                obj = json.loads(s) if isinstance(s, str) else s
+                if obj.get("type") != "Point":
+                    return (np.nan, np.nan)
+                lon, lat = obj.get("coordinates", [np.nan, np.nan])
+                return (lon, lat)
+            except Exception:
+                return (np.nan, np.nan)
 
+        coords = d["Geom"].apply(parse_point)
+        d["lon"] = coords.apply(lambda x: x[0])
+        d["lat"] = coords.apply(lambda x: x[1])
+        return d.dropna(subset=["lon", "lat"])
+
+    def _zoom_for_bounds(lon_min, lon_max, lat_min, lat_max):
+        lon_range = max(1e-6, lon_max - lon_min)
+        lat_range = max(1e-6, lat_max - lat_min)
+        max_range = max(lon_range, lat_range)
+
+        if max_range > 30:  return 2
+        if max_range > 15:  return 3
+        if max_range > 8:   return 4
+        if max_range > 4:   return 5
+        if max_range > 2:   return 6
+        if max_range > 1:   return 7
+        if max_range > 0.5: return 8
+        if max_range > 0.25:return 9
+        if max_range > 0.12:return 10
+        if max_range > 0.06:return 11
+        if max_range > 0.03:return 12
+        return 13
+
+    @render_plotly
+    def map():
+        d = df_points()
+
+        # Vancouver fallback (if filters return 0 rows)
+        default_center = {"lat": 49.2827, "lon": -123.1207}
+        default_zoom = 10
+
+        token = os.getenv("MAPBOX_TOKEN")
+
+        if token:
+            px.set_mapbox_access_token(token)
+            map_style = "light"
+        else:
+            map_style = "open-street-map"
+
+        if len(d) == 0:
+            fig = px.scatter_mapbox(
+                pd.DataFrame({"lat": [default_center["lat"]], "lon": [default_center["lon"]]}),
+                lat="lat",
+                lon="lon",
+                zoom=default_zoom,
+                center=default_center,
+            )
+            fig.update_traces(marker={"size": 1, "opacity": 0.0}, hoverinfo="skip")
+            fig.update_layout(mapbox_style="light", margin=dict(l=0, r=0, t=0, b=0), height=600)
+            return fig
+
+        lon_min, lon_max = d["lon"].min(), d["lon"].max()
+        lat_min, lat_max = d["lat"].min(), d["lat"].max()
+        center = {"lon": float((lon_min + lon_max) / 2), "lat": float((lat_min + lat_max) / 2)}
+        zoom = _zoom_for_bounds(lon_min, lon_max, lat_min, lat_max)
+
+        fig = px.scatter_mapbox(
+            d,
+            lat="lat",
+            lon="lon",
+            hover_name="Name" if "Name" in d.columns else None,
+            hover_data=[c for c in ["Address", "Occupancy Year", "Clientele", "Operator"] if c in d.columns],
+            zoom=zoom,
+            center=center,
+        )
+        fig.update_traces(marker={"size": 9, "opacity": 0.75})
+        fig.update_layout(mapbox_style="light", margin=dict(l=0, r=0, t=0, b=0), autosize=True)
+        return fig
+    
+
+# For App Rendering, this line must be at the last
 app = App(app_ui, server=server)
