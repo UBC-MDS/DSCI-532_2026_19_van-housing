@@ -42,15 +42,16 @@ pip install -r requirements.txt
 ### Running the Dashboard Locally
 
 ```bash
-cd src
-shiny run app.py
+shiny run src/app.py
 ```
 
 The dashboard will be available at `http://localhost:8000`
 
 ### View the Dashboard Live
 
-The dashboard can be viewed online [here](https://019ca12b-70bc-0d29-8861-3aa67b7b1905.share.connect.posit.cloud/). This link reflects the most recent updates and releases.
+The dashboard can be viewed online from the following links:
+- [Dev branch dashboard](https://019ca12b-70bc-0d29-8861-3aa67b7b1905.share.connect.posit.cloud/)  
+- [Main branch dashboard](https://019ca11c-80e1-200e-f440-05e01724ec0a.share.connect.posit.cloud/)
 
 ## Contributing
 
