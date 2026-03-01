@@ -75,3 +75,7 @@ flowchart TD
 - **Depends on:** `df`  
 - **Performs:** Plots building locations on a map using latitude/longitude.  
 - **Displayed as:** Interactive map showing spatial distribution of filtered buildings.
+
+## Complexity Enhancement
+
+Added reset button to reset filters back to default. If users want to reset to default filters, they do not have to individually remove filters.
