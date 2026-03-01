@@ -2,9 +2,13 @@
 
 ## Vancouver Non-Market Housing Dashboard
 
+LOOKING FOR AFFORDABLE HOUSING? TIRED OF TRUMP AFFECTING OUR CANADIAN ECONOMY?? 
+
+DONT WORRY, YOU ARE IN THE RIGHT PLACE!!!!!!
+
 This dashboard visualizes non-market housing projects in **Vancouver** using publicly available data. It is designed to help:
 
-- **Residents & Renters**: Understand availability, types, and occupancy years of non-market housing.  
+- **Residents & Renters**: Understand building options, types, and occupancy years of non-market housing.  
 - **City Planners & Policymakers**: Track housing development and analyze trends over time.  
 
 Users can filter projects by **clientele**, **bedrooms**, **accessibility**, and **occupancy year**. The dashboard displays:  
@@ -15,8 +19,8 @@ Users can filter projects by **clientele**, **bedrooms**, **accessibility**, and
 
 ## Demo
 
-add demo here! 
-![Demo](img/demo.gif)
+Here is our Demo Video! 
+▶ https://youtu.be/646B0TKdOjM
 
 ## Getting Started
 
