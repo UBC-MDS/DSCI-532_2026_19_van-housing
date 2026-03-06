@@ -267,6 +267,7 @@ def server(input, output, session):
             d,
             lat="lat",
             lon="lon",
+            color='Clientele',
             hover_name="Name" if "Name" in d.columns else None,
             hover_data=[c for c in ["Address", "Occupancy Year", "Clientele", "Operator"] if c in d.columns],
             zoom=zoom,
