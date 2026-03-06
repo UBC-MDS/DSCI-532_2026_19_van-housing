@@ -50,7 +50,7 @@ app_ui = ui.page_fillable(
     ui.page_sidebar(
         ui.sidebar(
             ui.h4("Filters"),
-            ui.input_radio_buttons(
+            ui.input_checkbox_group(
                 "clientele",
                 "Clientele",
                 ["Families", "Seniors", "Mixed"]
@@ -152,9 +152,11 @@ def server(input, output, session):
     @reactive.calc
     def df():
         filtered_data = data.copy()
-        filtered_data = filtered_data[
-            filtered_data.Clientele == input.clientele()
-        ]
+
+        if input.clientele():
+            filtered_data = filtered_data[
+                filtered_data.Clientele.isin(input.clientele())
+            ]
 
         if input.br():
             br_list = [i + " Available" for i in input.br()]
