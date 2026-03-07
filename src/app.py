@@ -86,6 +86,17 @@ qc = querychat.QueryChat(
     ai_data,
     "vancouver_non_market_housing",
     client=chat_client,
+    greeting="""Hello! I'm here to help you explore and analyze the Vancouver non-market housing data. You can ask me to filter, sort, or answer questions about the dataset.
+
+Here are some ideas to get started:
+
+Explore the data
+* Show me all housing units for seniors
+* What is the average number of total units?
+
+Filter and sort
+* Filter to mixed clientele housing with 2BR available
+* Sort the housing projects by occupancy year descending"""
 )
 
 
@@ -162,11 +173,10 @@ app_ui = ui.page_fillable(
             ui.page_sidebar(
                 ui.sidebar(
                     ui.h4("Filters"),
-                    ui.input_radio_buttons(
+                    ui.input_checkbox_group(
                         "clientele",
                         "Clientele",
-                        ["Families", "Seniors", "Mixed"],
-                        selected="Families"
+                        ["Families", "Seniors", "Mixed"]
                     ),
                     ui.input_selectize(
                         "br",
@@ -275,6 +285,7 @@ app_ui = ui.page_fillable(
                         ui.card(
                             ui.card_header(ui.output_text("ai_title")),
                             ui.output_data_frame("ai_data_table"),
+                            ui.download_button("download_data", "Download Data", class_="btn-primary"),
                             full_screen=True
                         ),
                         class_="ai-results-col"
@@ -313,7 +324,7 @@ def server(input, output, session):
 
         if input.clientele():
             filtered_data = filtered_data[
-                filtered_data["Clientele"] == (input.clientele())
+                filtered_data.Clientele.isin(input.clientele())
             ]
 
         if input.br():
@@ -438,9 +449,9 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.reset)
     def _():
-        ui.update_radio_buttons(
+        ui.update_checkbox_group(
             "clientele",
-            selected="Families"
+            selected=[]
         )
 
         ui.update_selectize(
@@ -457,6 +468,10 @@ def server(input, output, session):
             "year",
             value=[date(1971, 1, 1), date(2025, 12, 31)]
         )
+
+    @render.download(filename="filtered_data.csv")
+    def download_data():
+        yield ai_data_table.data_view().to_csv()
 
 # For App Rendering, this line must be at the last
 app = App(app_ui, server=server)

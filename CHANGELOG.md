@@ -26,4 +26,13 @@ We have implemented all job stories.
 
 Our final layout is similar to our sketch. The difference is we removed a few filters and changed the charts to a card showing the total number of buildings and a table showing details of buildings. These are documented above.
 
+## [0.3.0]
+
+### Added
+
+* Download button in AI tab ([#66](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/66))
+
+### Changed
+
+* Changed clientele radio button to checkboxes to allow for select all and coloured map by clientele. ([#63](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/63))
 
