@@ -13,3 +13,8 @@ dependencies:
   
   - pip:
       - shinywidgets
+      - python-dotenv
+      - chatlas
+      - anthropic
+      - querychat
+      
