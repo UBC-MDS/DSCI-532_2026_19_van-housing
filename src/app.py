@@ -86,6 +86,17 @@ qc = querychat.QueryChat(
     ai_data,
     "vancouver_non_market_housing",
     client=chat_client,
+    greeting="""Hello! I'm here to help you explore and analyze the Vancouver non-market housing data. You can ask me to filter, sort, or answer questions about the dataset.
+
+Here are some ideas to get started:
+
+Explore the data
+* Show me all housing units for seniors
+* What is the average number of total units?
+
+Filter and sort
+* Filter to mixed clientele housing with 2BR available
+* Sort the housing projects by occupancy year descending"""
 )
 
 
