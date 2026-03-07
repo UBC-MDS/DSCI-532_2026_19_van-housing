@@ -173,11 +173,10 @@ app_ui = ui.page_fillable(
             ui.page_sidebar(
                 ui.sidebar(
                     ui.h4("Filters"),
-                    ui.input_radio_buttons(
+                    ui.input_checkbox_group(
                         "clientele",
                         "Clientele",
-                        ["Families", "Seniors", "Mixed"],
-                        selected="Families"
+                        ["Families", "Seniors", "Mixed"]
                     ),
                     ui.input_selectize(
                         "br",
@@ -324,7 +323,7 @@ def server(input, output, session):
 
         if input.clientele():
             filtered_data = filtered_data[
-                filtered_data["Clientele"] == (input.clientele())
+                filtered_data.Clientele.isin(input.clientele())
             ]
 
         if input.br():
