@@ -5,7 +5,7 @@ anthropic==0.84.0
 querychat==0.5.1
 
 # Core Shiny
-shiny==1.4.0
+shiny==1.5.1
 shinywidgets==0.7.1
 
 # Data manipulation
