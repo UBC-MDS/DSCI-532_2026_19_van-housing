@@ -284,8 +284,59 @@ app_ui = ui.page_fillable(
                     ui.div(
                         ui.card(
                             ui.card_header(ui.output_text("ai_title")),
+                            ui.layout_columns(
+                                ui.card(
+                                    ui.h4(
+                                        "Total Units",
+                                        style="color:white; text-align:center;"
+                                    ),
+                                    ui.div(
+                                        ui.output_text("ai_total_units"),
+                                        style="""
+                                            font-size:34px;
+                                            font-weight:bold;
+                                            text-align:center;
+                                            color:white;
+                                        """
+                                    ),
+                                    style="""
+                                        background: linear-gradient(135deg, #00b894, #55efc4);
+                                        border-radius:12px;
+                                        padding:20px;
+                                    """
+                                ),
+
+                                ui.card(
+                                    ui.h4(
+                                        "Average Building Age",
+                                        style="color:white; text-align:center;"
+                                    ),
+                                    ui.div(
+                                        ui.output_text("ai_avg_age"),
+                                        style="""
+                                            font-size:34px;
+                                            font-weight:bold;
+                                            text-align:center;
+                                            color:white;
+                                        """
+                                    ),
+                                    style="""
+                                        background: linear-gradient(135deg, #0984e3, #74b9ff);
+                                        border-radius:12px;
+                                        padding:20px;
+                                    """
+                                ),
+                                col_widths=[6,6]
+                            ),
+
                             ui.output_data_frame("ai_data_table"),
-                            ui.download_button("download_data", "Download Data", class_="btn-primary"),
+
+                            ui.download_button(
+                                "download_data",
+                                "Download Data",
+                                class_="btn-primary"
+                            ),
+
                             full_screen=True
                         ),
                         class_="ai-results-col"
@@ -317,6 +368,26 @@ def server(input, output, session):
     @render.data_frame
     def ai_data_table():
         return render.DataGrid(qc_vals.df())
+    
+    @output
+    @render.text
+    def ai_total_units():
+        df_ai = qc_vals.df()
+        if df_ai is None or len(df_ai) == 0:
+            return "0"
+        return f"{int(df_ai['Total Units'].sum()):,}"
+
+    @output
+    @render.text
+    def ai_avg_age():
+        df_ai = qc_vals.df()
+        if df_ai is None or len(df_ai) == 0:
+            return "N/A"
+
+        current_year = date.today().year
+        avg_age = (current_year - df_ai["Occupancy Year"]).mean()
+
+        return f"{avg_age:.1f} years"
 
     @reactive.calc
     def df():
