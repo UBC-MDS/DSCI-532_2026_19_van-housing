@@ -449,9 +449,9 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.reset)
     def _():
-        ui.update_radio_buttons(
+        ui.update_checkbox_group(
             "clientele",
-            selected="Families"
+            selected=[]
         )
 
         ui.update_selectize(
