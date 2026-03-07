@@ -285,6 +285,7 @@ app_ui = ui.page_fillable(
                         ui.card(
                             ui.card_header(ui.output_text("ai_title")),
                             ui.output_data_frame("ai_data_table"),
+                            ui.download_button("download_data", "Download Data", class_="btn-primary"),
                             full_screen=True
                         ),
                         class_="ai-results-col"
@@ -467,6 +468,10 @@ def server(input, output, session):
             "year",
             value=[date(1971, 1, 1), date(2025, 12, 31)]
         )
+
+    @render.download(filename="filtered_data.csv")
+    def download_data():
+        yield ai_data_table.data_view().to_csv()
 
 # For App Rendering, this line must be at the last
 app = App(app_ui, server=server)
