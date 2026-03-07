@@ -145,6 +145,7 @@ app_ui = ui.page_fillable(
             overflow-y: auto;
         }
     """),
+<<<<<<< HEAD
 
     ui.h2(
         "Non-market Housing Dashboard for the City of Vancouver",
@@ -263,6 +264,42 @@ app_ui = ui.page_fillable(
                         """
                     )
                 )
+=======
+    ui.h2("Non-market Housing Dashboard for the City of Vancouver", style="text-align:center; font-weight:700; font-size: 40px"),
+    ui.p("Below are the buildings that match your selections.", style="text-align:center; margin-top:-8px; font-size: 24px; color:#666;"),
+    ui.page_sidebar(
+        ui.sidebar(
+            ui.h4("Filters"),
+            ui.input_checkbox_group(
+                "clientele",
+                "Clientele",
+                ["Families", "Seniors", "Mixed"]
+            ),
+            ui.input_selectize(
+                "br",
+                "Bedrooms",
+                ["1BR", "2BR", "3BR", "4BR"],
+                multiple=True
+            ),
+            ui.input_selectize(
+                "accessible",
+                "Accessibility",
+                ["Standard", "Adaptable", "Accessible"],
+                multiple=True
+            ),
+            ui.input_slider(
+                "year",
+                "Year",
+                min=date(1971, 1, 1), max=date(2025, 12, 31),
+                value=[date(1971, 1, 1), date(2025, 12, 31)],
+                time_format='%Y'
+            ),
+            ui.input_action_button(
+                "reset",
+                "Reset Filters",
+                class_="btn btn-secondary",
+                style="margin-top: 15px; width: 100%;"
+>>>>>>> origin/dev
             )
         ),
 
@@ -310,9 +347,11 @@ def server(input, output, session):
     @reactive.calc
     def df():
         filtered_data = data.copy()
-        filtered_data = filtered_data[
-            filtered_data.Clientele == input.clientele()
-        ]
+
+        if input.clientele():
+            filtered_data = filtered_data[
+                filtered_data.Clientele.isin(input.clientele())
+            ]
 
         if input.br():
             br_list = [i + " Available" for i in input.br()]
@@ -423,6 +462,7 @@ def server(input, output, session):
             d,
             lat="lat",
             lon="lon",
+            color='Clientele',
             hover_name="Name" if "Name" in d.columns else None,
             hover_data=[c for c in ["Address", "Occupancy Year", "Clientele", "Operator"] if c in d.columns],
             zoom=zoom,

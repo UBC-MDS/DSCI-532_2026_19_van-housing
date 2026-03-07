@@ -18,7 +18,7 @@
 | ID | Type | Shiny Widget / Renderer | Depends On | Job Story |
 |----|------|------------------------|------------|------------|
 | year | Input | `ui.input_slider()` | — | #1 |
-| clientele | Input | `ui.input_radio_buttons()` | — | #2 |
+| clientele | Input | `ui.input_checkbox_group()` | — | #2 |
 | br | Input | `ui.input_selectize()` | — | #4 |
 | accessibility | Input | `ui.input_selectize()` | — | #4 |
 | df | Reactive calc | `@reactive.calc` | `year`, `clientele`, `br`, `accessibility` | #1, #2, #3, #4, #5, #6 |
@@ -75,3 +75,7 @@ flowchart TD
 - **Depends on:** `df`  
 - **Performs:** Plots building locations on a map using latitude/longitude.  
 - **Displayed as:** Interactive map showing spatial distribution of filtered buildings.
+
+## Complexity Enhancement
+
+Added reset button to reset filters back to default. If users want to reset to default filters, they do not have to individually remove filters.

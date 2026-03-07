@@ -9,6 +9,10 @@
 * Added table showing details of filtered buildings. ([#45](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/45))
 * Added map showing location of filtered buildings. ([#46](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/46))
 
+* Added colorful map, and reset button ([#50](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/50))
+
+* Added demo ([#51](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/51))
+
 ### Changed
 
 * Removed project status filter because home buyers will likely only be interested in completed buildings, so the table is pre-filtered.
@@ -21,3 +25,5 @@
 We have implemented all job stories.
 
 Our final layout is similar to our sketch. The difference is we removed a few filters and changed the charts to a card showing the total number of buildings and a table showing details of buildings. These are documented above.
+
+
