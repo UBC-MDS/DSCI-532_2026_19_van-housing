@@ -1,12 +1,3 @@
-#Script Structure for CLARITY, this shit confusing af
-# Data Layer: Does filtering, encoding, label creations, and some data wrangling
-# UI Layer: app_ui, this defines what the user sees, like side bar holds filters as inputs, and main area holds charts as output
-# Server Layer: the reactive logic - and controls what runs when filter changes
-#   df() -> apply sidebar filters to data
-#   @render/reactive.text/table/calc/ploty/effect -> all this stuff controls and plots the charts
-# App Layer: the last line, it just renders stuff
-
-#Impoting things Mileston 2
 from shiny import App, ui, reactive, render
 import pandas as pd
 from datetime import date
@@ -17,29 +8,9 @@ import numpy as np
 import plotly.express as px
 from shinywidgets import output_widget, render_plotly
 
-#Imports for AI Milestone 3 
-from pathlib import Path
-from dotenv import load_dotenv
-from chatlas import ChatAnthropic
-import querychat
-
-#Setting up the AI agent
-# two .parent is for going back to repo root to find the .env for our SECRETS and API keys 
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
-
-chat_client = ChatAnthropic(
-    model="claude-sonnet-4-0",
-    system_prompt=(
-        "You help users explore a Vancouver non-market housing dataset. "
-        "Translate user questions into correct data queries. "
-        "Use only the dataset columns that exist. "
-        "Do not invent fields or values."
-    ),
-)
-
-# Data wrangling
 data = pd.read_csv('data/raw/non-market-housing.csv', sep=';')
 
+# Data wrangling
 data.rename(columns={'Clientele- Families': 'Clientele - Families'}, inplace=True)
 data = data.loc[data['Project Status'] == 'Completed']
 
@@ -61,34 +32,6 @@ data['Total Units'] = (
     data['Clientele - Other']
 )
 
-#QUERYCHAT 
-# ai_data gives QueryChat a cleaner table to work with.
-# It avoids geometry/extra columns that are less useful for natural-language querying.
-ai_data = data[[
-    "Index Number",
-    "Name",
-    "Address",
-    "Operator",
-    "Clientele",
-    "Occupancy Year",
-    "Total Units",
-    "1BR Available",
-    "2BR Available",
-    "3BR Available",
-    "4BR Available",
-    "Studio Available",
-    "Accessible Available",
-    "Adaptable Available",
-    "Standard Available"
-]].copy()
-
-qc = querychat.QueryChat(
-    ai_data,
-    "vancouver_non_market_housing",
-    client=chat_client,
-)
-
-
 # defining layout
 app_ui = ui.page_fillable(
     ui.tags.style("""
@@ -101,186 +44,103 @@ app_ui = ui.page_fillable(
         #map .svg-container {
             height: 100% !important;
         }
-                  
-        /* AI Explorer layout */
-        .ai-explorer-page {
-            height: calc(100vh - 140px);
-            overflow: hidden;
-        }
-
-        .ai-explorer-page .bslib-sidebar-layout {
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .ai-explorer-page .sidebar {
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        .ai-results-col {
-            height: 100%;
-            min-height: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ai-results-col > .row,
-        .ai-results-col .col,
-        .ai-results-col .card {
-            height: 100%;
-            min-height: 0;
-        }
-
-        .ai-results-col .card {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .ai-results-col .card-body {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-        }
     """),
-
-    ui.h2(
-        "Non-market Housing Dashboard for the City of Vancouver",
-        style="text-align:center; font-weight:700; font-size: 40px"
-    ),
-    ui.p(
-        "Below are the buildings that match your selections.",
-        style="text-align:center; margin-top:-8px; font-size: 24px; color:#666;"
-    ),
-
-    ui.navset_tab(
-
-        ui.nav_panel(
-            "Dashboard",
-            ui.page_sidebar(
-                ui.sidebar(
-                    ui.h4("Filters"),
-                    ui.input_radio_buttons(
-                        "clientele",
-                        "Clientele",
-                        ["Families", "Seniors", "Mixed"],
-                        selected="Families"
-                    ),
-                    ui.input_selectize(
-                        "br",
-                        "Bedrooms",
-                        ["1BR", "2BR", "3BR", "4BR"],
-                        multiple=True
-                    ),
-                    ui.input_selectize(
-                        "accessible",
-                        "Accessibility",
-                        ["Standard", "Adaptable", "Accessible"],
-                        multiple=True
-                    ),
-                    ui.input_slider(
-                        "year",
-                        "Year",
-                        min=date(1971, 1, 1), max=date(2025, 12, 31),
-                        value=[date(1971, 1, 1), date(2025, 12, 31)],
-                        time_format="%Y"
-                    ),
-                    ui.input_action_button(
-                        "reset",
-                        "Reset Filters",
-                        class_="btn btn-secondary",
-                        style="margin-top: 15px; width: 100%;"
-                    )
-                ),
-
-                ui.div(
-                    ui.layout_columns(
-                        ui.card(
-                            ui.h4(
-                                "Total Buildings Count",
-                                style="color: #ffffff; text-align: center; font-weight: 500;"
-                            ),
-                            ui.div(
-                                ui.output_text("total_units_card"),
-                                style="""
-                                    font-size: 48px;
-                                    font-weight: bold;
-                                    text-align: center;
-                                    color: #ffffff;
-                                    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-                                """
-                            ),
-                            style="""
-                                background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-                                border-radius: 15px;
-                                padding: 25px;
-                                height: 200px;
-                                box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-                            """
-                        ),
-
-                        ui.card(
-                            ui.h4(
-                                "Buildings Summary",
-                                style="text-align: center; font-weight: 500; color: #2d3436;"
-                            ),
-                            ui.div(
-                                ui.output_table("building_table"),
-                                style="""
-                                    width: 100%;
-                                    max-height: 240px;
-                                    overflow-y: auto;
-                                    background-color: #ffffff;
-                                    padding: 10px;
-                                """
-                            ),
-                            style="""
-                                border-radius: 15px;
-                                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                                background-color: #ffffff;
-                                border: 1px solid #dfe6e9;
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                            """
-                        ),
-                        col_widths=[4, 8]
-                    ),
-
-                    ui.card(
-                        ui.h4("Map"),
-                        ui.div(
-                            output_widget("map"),
-                            style="height: 50vh;"
-                        ),
-                        style="""
-                            margin-top: 20px;
-                            flex-grow: 1;
-                            display: flex;
-                            flex-direction: column;
-                        """
-                    )
-                )
+    ui.h2("Non-market Housing Dashboard for the City of Vancouver", style="text-align:center; font-weight:700; font-size: 40px"),
+    ui.p("Below are the buildings that match your selections.", style="text-align:center; margin-top:-8px; font-size: 24px; color:#666;"),
+    ui.page_sidebar(
+        ui.sidebar(
+            ui.h4("Filters"),
+            ui.input_checkbox_group(
+                "clientele",
+                "Clientele",
+                ["Families", "Seniors", "Mixed"]
+            ),
+            ui.input_selectize(
+                "br",
+                "Bedrooms",
+                ["1BR", "2BR", "3BR", "4BR"],
+                multiple=True
+            ),
+            ui.input_selectize(
+                "accessible",
+                "Accessibility",
+                ["Standard", "Adaptable", "Accessible"],
+                multiple=True
+            ),
+            ui.input_slider(
+                "year",
+                "Year",
+                min=date(1971, 1, 1), max=date(2025, 12, 31),
+                value=[date(1971, 1, 1), date(2025, 12, 31)],
+                time_format='%Y'
+            ),
+            ui.input_action_button(
+                "reset",
+                "Reset Filters",
+                class_="btn btn-secondary",
+                style="margin-top: 15px; width: 100%;"
             )
         ),
-
-        ui.nav_panel(
-            "AI Explorer",
-            ui.div(
-                ui.page_sidebar(
-                    qc.sidebar(),
+        ui.div(
+            ui.layout_columns(
+                # Total Units Card
+                ui.card(
+                    ui.h4("Total Buildings Count", style="color: #ffffff; text-align: center; font-weight: 500;"),
                     ui.div(
-                        ui.card(
-                            ui.card_header(ui.output_text("ai_title")),
-                            ui.output_data_frame("ai_data_table"),
-                            full_screen=True
-                        ),
-                        class_="ai-results-col"
-                    )
+                        ui.output_text("total_units_card"),
+                        style="""
+                            font-size: 48px;
+                            font-weight: bold;
+                            text-align: center;
+                            color: #ffffff;
+                            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+                        """
+                    ),
+                    style="""
+                        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+                        border-radius: 15px;
+                        padding: 25px;
+                        height: 200px; 
+                        box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+                    """
                 ),
-                class_="ai-explorer-page"
+                # Buildings Table Card
+                ui.card(
+                    ui.h4("Buildings Summary", style="text-align: center; font-weight: 500; color: #2d3436;"),
+                    ui.div(
+                        ui.output_table("building_table"),
+                        style="""
+                            width: 100%;
+                            max-height: 240px;
+                            overflow-y: auto;
+                            background-color: #ffffff;
+                            padding: 10px;
+                        """
+                    ),
+                    style="""
+                        border-radius: 15px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                        background-color: #ffffff;
+                        border: 1px solid #dfe6e9;
+                        display: flex;
+                        flex-direction: column; 
+                        align-items: center; 
+                    """
+                ),
+                col_widths=[4, 8]
+            ),
+            ui.card(
+                ui.h4("Map"),
+                ui.div(
+                    output_widget("map"),
+                    style="height: 50vh;"
+                ),
+                style="""
+                    margin-top: 20px;
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+                """
             )
         )
     )
@@ -289,31 +149,13 @@ app_ui = ui.page_fillable(
 
 # defining logic and reactivity
 def server(input, output, session):
-    qc_vals = qc.server()
-    # chat = ui.Chat("housing_chat") #connects the server to the UI chat box
-
-    # @chat.on_user_submit #runs everytime the user sends a message
-    # async def handle_user_input(user_input: str):
-    #     response = await chat_client.stream_async(user_input) #sends the prompt to Claude
-    #     await chat.append_message_stream(response) #streams the response back to the app
-
-    @output
-    @render.text
-    def ai_title():
-        return qc_vals.title() or "AI-filtered housing dataset"
-
-    @output
-    @render.data_frame
-    def ai_data_table():
-        return render.DataGrid(qc_vals.df())
-
     @reactive.calc
     def df():
         filtered_data = data.copy()
 
         if input.clientele():
             filtered_data = filtered_data[
-                filtered_data["Clientele"] == (input.clientele())
+                filtered_data.Clientele.isin(input.clientele())
             ]
 
         if input.br():
