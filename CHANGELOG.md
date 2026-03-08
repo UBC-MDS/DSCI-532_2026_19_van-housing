@@ -29,6 +29,7 @@ Our final layout is similar to our sketch. The difference is we removed a few fi
 
 ### Added
 
+* Querychat AI chat interface and a dataframe output component to see the filtered dataframe ([#64](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/64))
 * Download button in AI tab ([#66](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/66))
 * Added AI panel components ([#69](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/69))
 
