@@ -12,6 +12,9 @@
 * Added colorful map, and reset button ([#50](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/50))
 
 * Added demo ([#51](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/51))
+* Added AI panel components ([#69](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/69))
+* Updated component alignment of dashboard main ([#71](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/71))
+
 
 ### Changed
 
