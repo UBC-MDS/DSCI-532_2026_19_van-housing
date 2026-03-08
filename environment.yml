@@ -15,6 +15,7 @@ dependencies:
       - shinywidgets
       - python-dotenv
       - chatlas
+      - plotly
       - anthropic
       - querychat
       
