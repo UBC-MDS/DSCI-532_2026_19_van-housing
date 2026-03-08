@@ -8,12 +8,8 @@
 * Added card for total number of buildings. ([#45](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/45))
 * Added table showing details of filtered buildings. ([#45](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/45))
 * Added map showing location of filtered buildings. ([#46](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/46))
-
 * Added colorful map, and reset button ([#50](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/50))
-
 * Added demo ([#51](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/51))
-* Added AI panel components ([#69](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/69))
-* Updated component alignment of dashboard main ([#71](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/71))
 
 
 ### Changed
@@ -34,8 +30,10 @@ Our final layout is similar to our sketch. The difference is we removed a few fi
 ### Added
 
 * Download button in AI tab ([#66](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/66))
+* Added AI panel components ([#69](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/69))
 
 ### Changed
 
 * Changed clientele radio button to checkboxes to allow for select all and coloured map by clientele. ([#63](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/63))
+* Updated component alignment of dashboard main ([#71](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/71))
 
