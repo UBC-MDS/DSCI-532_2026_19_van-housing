@@ -103,15 +103,53 @@ Filter and sort
 # defining layout
 app_ui = ui.page_fillable(
     ui.tags.style("""
-        #map, #map > div {
-            height: 100% !important;
-        }
+    body, html, .shiny-page {
+        height: 100vh;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f0f2f5;
+    }
 
-        #map .js-plotly-plot,
-        #map .plot-container,
-        #map .svg-container {
-            height: 100% !important;
-        }
+    #building_table table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #dfe4ea;
+        color: #2d3436;
+        font-weight: 600;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 2px solid #b2bec3;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    #building_table table tbody td {
+        padding: 10px;
+        border-bottom: 1px solid #ecf0f1;
+        text-align: center;
+        color: #2d3436;
+    }
+
+    #building_table table tbody tr:nth-child(even) {
+        background-color: rgba(255,255,255,0.15);
+    }
+
+    #building_table table tbody tr:hover {
+        background-color: rgba(255,255,255,0.3);
+    }
+
+    /* Map styling */
+    #map, #map > div {
+        height: 100% !important;
+    }
+
+    #map .js-plotly-plot,
+    #map .plot-container,
+    #map .svg-container {
+        height: 100% !important;
+    }
                   
         /* AI Explorer layout */
         .ai-explorer-page {
@@ -206,7 +244,7 @@ app_ui = ui.page_fillable(
                 ),
 
                 ui.div(
-                    ui.layout_columns(
+                    ui.div(
                         ui.card(
                             ui.h4(
                                 "Total Buildings Count",
@@ -234,44 +272,61 @@ app_ui = ui.page_fillable(
                         ui.card(
                             ui.h4(
                                 "Buildings Summary",
-                                style="text-align: center; font-weight: 500; color: #2d3436;"
+                                style="text-align: center; font-weight: 600; color: #ffffff;"
                             ),
                             ui.div(
                                 ui.output_table("building_table"),
                                 style="""
                                     width: 100%;
-                                    max-height: 240px;
+                                    max-height: 320px;
                                     overflow-y: auto;
-                                    background-color: #ffffff;
-                                    padding: 10px;
+                                    padding: 0;
+                                    border-radius: 12px;
+                                    background-color: transparent;
                                 """
                             ),
                             style="""
                                 border-radius: 15px;
-                                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                                background-color: #ffffff;
+                                box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+                                background: #777a7f;
                                 border: 1px solid #dfe6e9;
                                 display: flex;
                                 flex-direction: column;
-                                align-items: center;
+                                align-items: stretch;
+                                flex-grow: 1;
+                                padding: 12px;
                             """
                         ),
-                        col_widths=[4, 8]
+
+                        style="""
+                            display:flex;
+                            flex-direction:column;
+                            gap:15px;
+                            flex:4;
+                            height:100%;
+                        """
                     ),
 
                     ui.card(
                         ui.h4("Map"),
                         ui.div(
                             output_widget("map"),
-                            style="height: 50vh;"
+                            style="flex-grow:1; height:100%;"
                         ),
                         style="""
-                            margin-top: 20px;
-                            flex-grow: 1;
-                            display: flex;
-                            flex-direction: column;
+                            display:flex;
+                            flex-direction:column;
+                            flex:8;
                         """
-                    )
+                    ),
+
+                    style="""
+                        display:flex;
+                        flex-direction:row;
+                        gap:20px;
+                        height:700px;
+                        align-items:stretch;
+                    """
                 )
             )
         ),
