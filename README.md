@@ -1,5 +1,13 @@
 # DSCI-532_2026_19_van-housing
 
+[![License](https://img.shields.io/github/license/UBC-MDS/DSCI-532_2026_19_van-housing)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/commits/main)
+[![Open Issues](https://img.shields.io/github/issues/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/issues)
+[![Repo Size](https://img.shields.io/github/repo-size/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing)
+[![Shiny for Python](https://img.shields.io/badge/Shiny-for%20Python-3776AB?logo=python&logoColor=white)](https://shiny.posit.co/py/)
+[![Posit Connect Cloud](https://img.shields.io/badge/Deployed%20on-Posit%20Connect%20Cloud-75AADB)](https://connect.posit.cloud/)
+[![UBC MDS](https://img.shields.io/badge/UBC-MDS-blueviolet)](https://masterdatascience.ubc.ca/)
+
 ## Vancouver Non-Market Housing Dashboard
 
 LOOKING FOR AFFORDABLE HOUSING? TIRED OF TRUMP AFFECTING OUR CANADIAN ECONOMY?? 
