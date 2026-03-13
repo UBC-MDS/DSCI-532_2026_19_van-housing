@@ -6,6 +6,7 @@ import json
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 from datetime import date
 
@@ -15,12 +16,9 @@ from data_load import data, qc
 # defining logic and reactivity
 def server(input, output, session):
     qc_vals = qc.server()
-    # chat = ui.Chat("housing_chat") #connects the server to the UI chat box
 
-    # @chat.on_user_submit #runs everytime the user sends a message
-    # async def handle_user_input(user_input: str):
-    #     response = await chat_client.stream_async(user_input) #sends the prompt to Claude
-    #     await chat.append_message_stream(response) #streams the response back to the app
+    #stores the Index Numbers of map selected points 
+    map_selected_indices = reactive.value(None)
 
     @output
     @render.text
@@ -31,7 +29,7 @@ def server(input, output, session):
     @render.data_frame
     def ai_data_table():
         return render.DataGrid(qc_vals.df())
-
+    
     @output
     @render.text
     def ai_total_units():
@@ -75,21 +73,32 @@ def server(input, output, session):
 
         years = input.year()
         filtered_data = filtered_data[
-            (filtered_data["Occupancy Year"] >= years[0].year) &
-            (filtered_data["Occupancy Year"] <= years[1].year)
+            (filtered_data['Occupancy Year'] >= years[0].year) &
+            (filtered_data['Occupancy Year'] <= years[1].year)
         ]
 
         return filtered_data
 
+    # map selection layer on top of sidebar filter
+    @reactive.calc
+    def df_map_selected():
+        base = df()
+        indices = map_selected_indices.get()
+        if indices is None:          
+            return base
+        if len(indices) == 0:        
+            return base.iloc[0:0]   
+        return base[base["Index Number"].isin(indices)]
+
     @output
     @render.text
     def total_units_card():
-        return f"{int(df()['Total Units'].sum()):,}"
-
+        return f"{int(df_map_selected()['Total Units'].sum()):,}"
+    
     @output
     @render.table
     def building_table():
-        return df()[[
+        return df_map_selected()[[
             "Index Number",
             "Name",
             "Occupancy Year"
@@ -120,35 +129,23 @@ def server(input, output, session):
         lat_range = max(1e-6, lat_max - lat_min)
         max_range = max(lon_range, lat_range)
 
-        if max_range > 30:
-            return 2
-        if max_range > 15:
-            return 3
-        if max_range > 8:
-            return 4
-        if max_range > 4:
-            return 5
-        if max_range > 2:
-            return 6
-        if max_range > 1:
-            return 7
-        if max_range > 0.5:
-            return 8
-        if max_range > 0.25:
-            return 9
-        if max_range > 0.12:
-            return 10
-        if max_range > 0.06:
-            return 11
-        if max_range > 0.03:
-            return 12
+        if max_range > 30:  return 2
+        if max_range > 15:  return 3
+        if max_range > 8:   return 4
+        if max_range > 4:   return 5
+        if max_range > 2:   return 6
+        if max_range > 1:   return 7
+        if max_range > 0.5: return 8
+        if max_range > 0.25:return 9
+        if max_range > 0.12:return 10
+        if max_range > 0.06:return 11
+        if max_range > 0.03:return 12
         return 13
 
     @render_plotly
     def map():
         d = df_points()
 
-        # Vancouver fallback (if filters return 0 rows)
         default_center = {"lat": 49.2827, "lon": -123.1207}
         default_zoom = 10
 
@@ -169,61 +166,66 @@ def server(input, output, session):
                 center=default_center,
             )
             fig.update_traces(marker={"size": 1, "opacity": 0.0}, hoverinfo="skip")
-            fig.update_layout(
-                mapbox_style=map_style,
-                margin=dict(l=0, r=0, t=0, b=0),
-                height=600
-            )
-            return fig
+            fig.update_layout(mapbox_style=map_style, margin=dict(l=0, r=0, t=0, b=0), height=600)
+            return go.FigureWidget(fig.data, fig.layout)
 
         lon_min, lon_max = d["lon"].min(), d["lon"].max()
         lat_min, lat_max = d["lat"].min(), d["lat"].max()
-        center = {
-            "lon": float((lon_min + lon_max) / 2),
-            "lat": float((lat_min + lat_max) / 2)
-        }
+        center = {"lon": float((lon_min + lon_max) / 2), "lat": float((lat_min + lat_max) / 2)}
         zoom = _zoom_for_bounds(lon_min, lon_max, lat_min, lat_max)
 
         fig = px.scatter_mapbox(
             d,
             lat="lat",
             lon="lon",
-            color="Clientele",
+            color='Clientele',
             hover_name="Name" if "Name" in d.columns else None,
             hover_data=[c for c in ["Address", "Occupancy Year", "Clientele", "Operator"] if c in d.columns],
             zoom=zoom,
             center=center,
+            custom_data=["Index Number"],
         )
         fig.update_traces(marker={"size": 9, "opacity": 0.75})
         fig.update_layout(
             mapbox_style=map_style,
             margin=dict(l=0, r=0, t=0, b=0),
-            autosize=True
+            autosize=True,
+            dragmode="select",
         )
-        return fig
 
+        #Convert to FigureWidget and attach on_selection to every trace
+        w = go.FigureWidget(fig.data, fig.layout)
+
+        def on_selection(trace, points, selector):
+            if points.point_inds:
+                selected = [
+                    trace.customdata[i][0]
+                    for i in points.point_inds
+                    if i < len(trace.customdata)
+                ]
+                map_selected_indices.set(selected if selected else None)
+            else:
+                map_selected_indices.set(None)
+
+        def on_deselect(trace, points, selector):
+            map_selected_indices.set(None)
+
+        for trace in w.data:
+            trace.on_selection(on_selection)
+            trace.on_deselect(on_deselect)
+
+        return w
+
+    #sidebar reset also clears the map selection
     @reactive.effect
     @reactive.event(input.reset)
     def _():
-        ui.update_checkbox_group(
-            "clientele",
-            selected=[]
-        )
+        map_selected_indices.set(None)
 
-        ui.update_selectize(
-            "br",
-            selected=[]
-        )
-
-        ui.update_selectize(
-            "accessible",
-            selected=[]
-        )
-
-        ui.update_slider(
-            "year",
-            value=[date(1971, 1, 1), date(2025, 12, 31)]
-        )
+        ui.update_checkbox_group("clientele", selected=[])
+        ui.update_selectize("br", selected=[])
+        ui.update_selectize("accessible", selected=[])
+        ui.update_slider("year", value=[date(1971, 1, 1), date(2025, 12, 31)])
 
     @render.download(filename="filtered_data.csv")
     def download_data():

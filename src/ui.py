@@ -55,7 +55,7 @@ app_ui = ui.page_fillable(
     #map .svg-container {
         height: 100% !important;
     }
-
+              
         /* AI Explorer layout */
         .ai-explorer-page {
             height: calc(100vh - 140px);
@@ -98,6 +98,13 @@ app_ui = ui.page_fillable(
             min-height: 0;
             overflow-y: auto;
         }
+
+    .map-hint {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+        margin-top: 4px;
+    }
     """),
 
     ui.h2(
@@ -214,6 +221,11 @@ app_ui = ui.page_fillable(
 
                     ui.card(
                         ui.h4("Map"),
+                        ui.p(
+                            "Tip: Use the box-select or lasso tool (toolbar top-right of map) "
+                            "to filter the cards and table to a specific area.",
+                            class_="map-hint"
+                        ),
                         ui.div(
                             output_widget("map"),
                             style="flex-grow:1; height:100%;"
@@ -286,7 +298,7 @@ app_ui = ui.page_fillable(
                                         padding:20px;
                                     """
                                 ),
-                                col_widths=[6, 6]
+                                col_widths=[6,6]
                             ),
 
                             ui.output_data_frame("ai_data_table"),
