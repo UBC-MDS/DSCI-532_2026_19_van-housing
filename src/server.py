@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 
 from datetime import date
 
-from data_load import data, qc
+from .data_load import data, qc
 
 
 # defining logic and reactivity
