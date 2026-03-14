@@ -9,8 +9,7 @@ import plotly.graph_objects as go
 from shiny import reactive, render, ui
 from shinywidgets import render_plotly
 
-from .data_load import get_filtered_data, qc
-
+from .data_load import get_filtered_data, qc, data_pipeline
 
 # defining logic and reactivity
 def server(input, output, session):
@@ -58,6 +57,7 @@ def server(input, output, session):
         year_range = (years[0].year, years[1].year)
 
         return get_filtered_data(
+            data_pipeline(),
             clientele=input.clientele(),
             br=input.br(),
             accessible=input.accessible(),
