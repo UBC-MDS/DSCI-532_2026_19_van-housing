@@ -144,7 +144,7 @@ def server(input, output, session):
 
     @render_plotly
     def map():
-        d = df_points()
+        d = df_points().copy()
 
         default_center = {"lat": 49.2827, "lon": -123.1207}
         default_zoom = 10
@@ -159,41 +159,69 @@ def server(input, output, session):
 
         if len(d) == 0:
             fig = px.scatter_mapbox(
-                pd.DataFrame({"lat": [default_center["lat"]], "lon": [default_center["lon"]]}),
+                pd.DataFrame({
+                    "lat": [default_center["lat"]],
+                    "lon": [default_center["lon"]],
+                }),
                 lat="lat",
                 lon="lon",
                 zoom=default_zoom,
                 center=default_center,
             )
             fig.update_traces(marker={"size": 1, "opacity": 0.0}, hoverinfo="skip")
-            fig.update_layout(mapbox_style=map_style, margin=dict(l=0, r=0, t=0, b=0), height=600)
+            fig.update_layout(
+                mapbox_style=map_style,
+                margin=dict(l=0, r=0, t=0, b=0),
+                height=600,
+            )
             return go.FigureWidget(fig.data, fig.layout)
+
+        # Clean Clientele column so Plotly can color safely
+        if "Clientele" in d.columns:
+            d["Clientele"] = (
+                d["Clientele"]
+                .fillna("Unknown")
+                .astype(str)
+                .str.strip()
+                .replace({"": "Unknown", "nan": "Unknown", "None": "Unknown"})
+            )
+        else:
+            d["Clientele"] = "Unknown"
 
         lon_min, lon_max = d["lon"].min(), d["lon"].max()
         lat_min, lat_max = d["lat"].min(), d["lat"].max()
-        center = {"lon": float((lon_min + lon_max) / 2), "lat": float((lat_min + lat_max) / 2)}
+        center = {
+            "lon": float((lon_min + lon_max) / 2),
+            "lat": float((lat_min + lat_max) / 2),
+        }
         zoom = _zoom_for_bounds(lon_min, lon_max, lat_min, lat_max)
 
         fig = px.scatter_mapbox(
             d,
             lat="lat",
             lon="lon",
-            color='Clientele',
+            color="Clientele",   # use column name, not a numpy array
             hover_name="Name" if "Name" in d.columns else None,
-            hover_data=[c for c in ["Address", "Occupancy Year", "Clientele", "Operator"] if c in d.columns],
+            hover_data=[
+                c for c in ["Address", "Occupancy Year", "Clientele", "Operator"]
+                if c in d.columns
+            ],
             zoom=zoom,
             center=center,
             custom_data=["Index Number"],
         )
+
         fig.update_traces(marker={"size": 9, "opacity": 0.75})
+
         fig.update_layout(
             mapbox_style=map_style,
             margin=dict(l=0, r=0, t=0, b=0),
             autosize=True,
             dragmode="select",
+            legend_title_text="Clientele",
         )
 
-        #Convert to FigureWidget and attach on_selection to every trace
+        # Convert to FigureWidget and attach on_selection to every trace
         w = go.FigureWidget(fig.data, fig.layout)
 
         def on_selection(trace, points, selector):
