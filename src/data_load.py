@@ -26,6 +26,9 @@ chat_client = ChatAnthropic(
 data = pd.read_csv("data/raw/non-market-housing.csv", sep=";")
 
 data.rename(columns={"Clientele- Families": "Clientele - Families"}, inplace=True)
+
+# print(data[["Clientele - Families", "Clientele - Seniors", "Clientele - Other"]].dtypes)
+
 data = data.loc[data["Project Status"] == "Completed"]
 
 data["Clientele"] = "Mixed"
@@ -37,6 +40,8 @@ data.loc[
     (data["Clientele - Families"] == 0) & (data["Clientele - Other"] == 0),
     "Clientele"
 ] = "Seniors"
+
+# print(data["Clientele"].value_counts(dropna=False))
 
 room_types = ["1BR", "2BR", "3BR", "4BR", "Studio"]
 for br in room_types:
