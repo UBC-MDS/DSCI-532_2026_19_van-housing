@@ -63,8 +63,8 @@ flowchart TD
 
 ### 4.2 `total_units_card`
 - **Depends on:** `df`  
-- **Performs:** Counts the number of buildings in the filtered dataset.  
-- **Displayed as:** KPI summary card showing “Total Buildings”.
+- **Performs:** Counts the number of units in the filtered dataset.  
+- **Displayed as:** KPI summary card showing “Total Units”.
 
 ### 4.3 `building_table`
 - **Depends on:** `df`  
