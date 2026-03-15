@@ -83,11 +83,16 @@ def server(input, output, session):
     @output
     @render.table
     def building_table():
-        return df_map_selected()[[
-            "Index Number",
-            "Name",
-            "Occupancy Year"
-        ]].sort_values("Occupancy Year")
+        return (
+            df_map_selected()[[
+                "Index Number",
+                "Name",
+                "Occupancy Year"
+            ]].sort_values("Occupancy Year")
+            .style.format({'Occupancy Year': "{0:0.0f}"})
+            .set_table_attributes('class="dataframe shiny-table table w-auto"')
+            .hide(axis="index")
+        )
 
     @reactive.calc
     def df_points():

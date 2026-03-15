@@ -181,13 +181,13 @@ app_ui = ui.page_fillable(
                     ui.div(
                         ui.card(
                             ui.h4(
-                                "Total Buildings Count",
+                                "Total Units Count",
                                 style="color: #ffffff; text-align: center; font-weight: 500;"
                             ),
                             ui.div(
                                 ui.output_text("total_units_card"),
                                 style="""
-                                    font-size: 48px;
+                                    font-size: 30px;
                                     font-weight: bold;
                                     text-align: center;
                                     color: #ffffff;
