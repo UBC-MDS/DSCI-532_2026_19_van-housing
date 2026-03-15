@@ -2,7 +2,7 @@ from shiny import ui
 from datetime import date
 from shinywidgets import output_widget
 
-from data_load import qc
+from .data_load import qc
 
 
 # defining layout
