@@ -38,3 +38,17 @@ Our final layout is similar to our sketch. The difference is we removed a few fi
 * Changed clientele radio button to checkboxes to allow for select all and coloured map by clientele. ([#63](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/63))
 * Updated component alignment of dashboard main ([#71](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/71))
 
+
+## [0.4.0] - 2026-03-17
+
+### Reflection
+
+Tests
+* Unit tests for `get_filtered_data`:
+    * `test_get_filtered_data`: Checks that data filtering works as expected in standard use case.
+    * `test_get_filtered_data_filter_unspecified`: Checks that all relevant data is still selected when some filters are not specified.
+    * `test_get_filtered_data_no_match`: Checks that an empty dataframe is returned when no data matches the filters.
+* Playwright tests:
+    * `test_initial_value_boxes`: Checks that total units card shows correct stats for the full dataset.
+    * `test_dataframe_initial_structure`: Checks that table has correct columns and rows for the full dataset.
+    * `test_reset_button_restores_defaults`: Checks that selecting Families filter changes total units card and reset button deselects all clientele options.

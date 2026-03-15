@@ -9,8 +9,7 @@ import plotly.graph_objects as go
 from shiny import reactive, render, ui
 from shinywidgets import render_plotly
 
-from .data_load import get_filtered_data, qc
-
+from .data_load import get_filtered_data, qc, data_pipeline
 
 # defining logic and reactivity
 def server(input, output, session):
@@ -47,6 +46,10 @@ def server(input, output, session):
         current_year = date.today().year
         avg_age = (current_year - df_ai["Occupancy Year"]).mean()
         return f"{avg_age:.1f} years"
+    
+    @render.download(filename="filtered_data.csv")
+    def download_data():
+        yield qc_vals.df().to_csv(index=False)
 
     @reactive.calc
     def df():
@@ -54,6 +57,7 @@ def server(input, output, session):
         year_range = (years[0].year, years[1].year)
 
         return get_filtered_data(
+            data_pipeline(),
             clientele=input.clientele(),
             br=input.br(),
             accessible=input.accessible(),
@@ -255,7 +259,3 @@ def server(input, output, session):
         ui.update_selectize("br", selected=[])
         ui.update_selectize("accessible", selected=[])
         ui.update_slider("year", value=[date(1971, 1, 1), date(2025, 12, 31)])
-
-    @render.download(filename="filtered_data.csv")
-    def download_data():
-        yield qc_vals.df().to_csv(index=False)

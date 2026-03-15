@@ -39,80 +39,95 @@ chat_client = ChatAnthropic(
 # -----------------------------
 # Keep this simple and safe: DuckDB reads parquet, then we keep your existing
 # wrangling logic almost unchanged.
-con = duckdb.connect()
 
-data = con.execute(
-    "SELECT * FROM read_parquet(?)",
-    [str(PARQUET_PATH)],
-).df()
+def read_data_parquet(con):
+    return con.execute(
+        "SELECT * FROM read_parquet(?)",
+        [str(PARQUET_PATH)],
+    ).df()
 
 
 # -----------------------------
 # Data wrangling
 # -----------------------------
-if "Clientele- Families" in data.columns:
-    data.rename(columns={"Clientele- Families": "Clientele - Families"}, inplace=True)
+def wrangle_data(data):
+    if "Clientele- Families" in data.columns:
+        data.rename(columns={"Clientele- Families": "Clientele - Families"}, inplace=True)
 
-# Keep only completed projects
-if "Project Status" in data.columns:
-    data = data.loc[data["Project Status"] == "Completed"].copy()
+    # Keep only completed projects
+    if "Project Status" in data.columns:
+        data = data.loc[data["Project Status"] == "Completed"].copy()
 
-# Build Clientele label
-if all(
-    col in data.columns
-    for col in ["Clientele - Families", "Clientele - Seniors", "Clientele - Other"]
-):
-    data["Clientele"] = "Mixed"
-    data.loc[
-        (data["Clientele - Seniors"] == 0) & (data["Clientele - Other"] == 0),
-        "Clientele",
-    ] = "Families"
-    data.loc[
-        (data["Clientele - Families"] == 0) & (data["Clientele - Other"] == 0),
-        "Clientele",
-    ] = "Seniors"
-else:
-    data["Clientele"] = "Mixed"
-
-# Bedroom availability flags
-room_types = ["1BR", "2BR", "3BR", "4BR", "Studio"]
-for br in room_types:
-    matching_cols = [col for col in data.columns if br in col]
-    if matching_cols:
-        data[f"{br} Available"] = (data[matching_cols].sum(axis=1) > 0).astype(int)
+    # Build Clientele label
+    if all(
+        col in data.columns
+        for col in ["Clientele - Families", "Clientele - Seniors", "Clientele - Other"]
+    ):
+        data["Clientele"] = "Mixed"
+        data.loc[
+            (data["Clientele - Seniors"] == 0) & (data["Clientele - Other"] == 0),
+            "Clientele",
+        ] = "Families"
+        data.loc[
+            (data["Clientele - Families"] == 0) & (data["Clientele - Other"] == 0),
+            "Clientele",
+        ] = "Seniors"
     else:
-        data[f"{br} Available"] = 0
+        data["Clientele"] = "Mixed"
 
-# Accessibility availability flags
-access_types = ["Accessible", "Adaptable", "Standard"]
-for ac in access_types:
-    matching_cols = [col for col in data.columns if ac in col]
-    if matching_cols:
-        data[f"{ac} Available"] = (data[matching_cols].sum(axis=1) > 0).astype(int)
+    # Bedroom availability flags
+    room_types = ["1BR", "2BR", "3BR", "4BR", "Studio"]
+    for br in room_types:
+        matching_cols = [col for col in data.columns if br in col]
+        if matching_cols:
+            data[f"{br} Available"] = (data[matching_cols].sum(axis=1) > 0).astype(int)
+        else:
+            data[f"{br} Available"] = 0
+
+    # Accessibility availability flags
+    access_types = ["Accessible", "Adaptable", "Standard"]
+    for ac in access_types:
+        matching_cols = [col for col in data.columns if ac in col]
+        if matching_cols:
+            data[f"{ac} Available"] = (data[matching_cols].sum(axis=1) > 0).astype(int)
+        else:
+            data[f"{ac} Available"] = 0
+
+    # Total units
+    if all(
+        col in data.columns
+        for col in ["Clientele - Families", "Clientele - Seniors", "Clientele - Other"]
+    ):
+        data["Total Units"] = (
+            data["Clientele - Families"].fillna(0)
+            + data["Clientele - Seniors"].fillna(0)
+            + data["Clientele - Other"].fillna(0)
+        )
     else:
-        data[f"{ac} Available"] = 0
+        data["Total Units"] = 0
 
-# Total units
-if all(
-    col in data.columns
-    for col in ["Clientele - Families", "Clientele - Seniors", "Clientele - Other"]
-):
-    data["Total Units"] = (
-        data["Clientele - Families"].fillna(0)
-        + data["Clientele - Seniors"].fillna(0)
-        + data["Clientele - Other"].fillna(0)
-    )
-else:
-    data["Total Units"] = 0
-
-# Make sure Occupancy Year is numeric
-if "Occupancy Year" in data.columns:
-    data["Occupancy Year"] = pd.to_numeric(data["Occupancy Year"], errors="coerce")
+    # Make sure Occupancy Year is numeric
+    if "Occupancy Year" in data.columns:
+        data["Occupancy Year"] = pd.to_numeric(data["Occupancy Year"], errors="coerce")
+    
+    return data
 
 
-# Register the prepared table inside DuckDB.
-# Interactive dashboard filtering now happens in DuckDB against this table.
-con.register("housing_prepared", data)
+# -----------------------------
+# Data pipeline
+# -----------------------------
+def data_pipeline() -> duckdb.DuckDBPyConnection:
+    """Read in data from parquet, wrangle and register data. Return updated con."""
+    con = duckdb.connect()
+
+    data = read_data_parquet(con)
+
+    data = wrangle_data(data)
+
+    # Register the prepared table inside DuckDB.
+    con.register("housing_prepared", data)
+
+    return con
 
 
 # -----------------------------
@@ -121,12 +136,12 @@ con.register("housing_prepared", data)
 def _sql_list(values: list[str]) -> str:
     return ", ".join("'" + str(v).replace("'", "''") + "'" for v in values)
 
-
-def get_data() -> pd.DataFrame:
-    return con.execute("SELECT * FROM housing_prepared").df()
+# def get_data() -> pd.DataFrame:
+#     return con.execute("SELECT * FROM housing_prepared").df()
 
 
 def get_filtered_data(
+    con,
     clientele: list[str] | None = None,
     br: list[str] | None = None,
     accessible: list[str] | None = None,
@@ -162,6 +177,8 @@ def get_filtered_data(
 # -----------------------------
 # QUERYCHAT
 # -----------------------------
+con = duckdb.connect()
+data = wrangle_data(read_data_parquet(con))
 ai_data = data[[
     "Index Number",
     "Name",
