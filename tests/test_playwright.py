@@ -3,7 +3,7 @@ from shiny.run import ShinyAppProc
 from shiny.pytest import create_app_fixture
 from playwright.sync_api import Page
 
-app = create_app_fixture("../src/app.py")
+app = create_app_fixture("../app.py")
 
 
 # test value box
