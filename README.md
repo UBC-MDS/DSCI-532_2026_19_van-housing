@@ -65,6 +65,13 @@ The dashboard can be viewed online from the following links:
 - [Dev branch dashboard](https://019ca12b-70bc-0d29-8861-3aa67b7b1905.share.connect.posit.cloud/)  
 - [Main branch dashboard](https://019ca11c-80e1-200e-f440-05e01724ec0a.share.connect.posit.cloud/)
 
+## Running Tests
+```bash
+conda activate 532-gp19 # Activate conda environment
+playwright install      # Install playwright if required 
+pytest
+```
+
 ## Contributing
 
 Interested in contributing? Check out the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
