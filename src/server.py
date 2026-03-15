@@ -111,35 +111,38 @@ def server(input, output, session):
         max_range = max(lon_range, lat_range)
 
         if max_range > 30:
-            return 2
-        if max_range > 15:
-            return 3
-        if max_range > 8:
-            return 4
-        if max_range > 4:
-            return 5
-        if max_range > 2:
-            return 6
-        if max_range > 1:
-            return 7
-        if max_range > 0.5:
-            return 8
-        if max_range > 0.25:
-            return 9
-        if max_range > 0.12:
-            return 10
-        if max_range > 0.06:
-            return 11
-        if max_range > 0.03:
-            return 12
-        return 13
+            calculated = 2
+        elif max_range > 15:
+            calculated = 3
+        elif max_range > 8:
+            calculated = 4
+        elif max_range > 4:
+            calculated = 5
+        elif max_range > 2:
+            calculated = 6
+        elif max_range > 1:
+            calculated = 7
+        elif max_range > 0.5:
+            calculated = 8
+        elif max_range > 0.25:
+            calculated = 9
+        elif max_range > 0.12:
+            calculated = 10
+        elif max_range > 0.06:
+            calculated = 11
+        elif max_range > 0.03:
+            calculated = 12
+        else:
+            calculated = 13
+
+        return max(calculated, 11)
 
     @render_plotly
     def map():
         d = df_points().copy()
 
         default_center = {"lat": 49.2827, "lon": -123.1207}
-        default_zoom = 10
+        default_zoom = 11
 
         token = os.getenv("MAPBOX_TOKEN")
 
@@ -164,7 +167,7 @@ def server(input, output, session):
             fig.update_layout(
                 mapbox_style=map_style,
                 margin=dict(l=0, r=0, t=0, b=0),
-                height=600,
+                autosize=True,
             )
             return go.FigureWidget(fig.data, fig.layout)
 
@@ -209,7 +212,16 @@ def server(input, output, session):
             margin=dict(l=0, r=0, t=0, b=0),
             autosize=True,
             dragmode="select",
-            legend_title_text="Clientele",
+            legend=dict(
+                title_text="Clientele",
+                x=0.01,
+                y=0.99,
+                xanchor="left",
+                yanchor="top",
+                bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="rgba(0,0,0,0.1)",
+                borderwidth=1,
+            ),
         )
 
         w = go.FigureWidget(fig.data, fig.layout)

@@ -17,43 +17,65 @@ app_ui = ui.page_fillable(
         background-color: #f0f2f5;
     }
 
+    #building_table,
+    #building_table > *,
+    #building_table > * > *,
+    #building_table > * > * > *,
+    #building_table > * > * > * > *,
+    #building_table table,
+    #building_table table tbody,
+    #building_table table tbody tr {
+        background: transparent !important;
+    }
+
     #building_table table thead th {
         position: sticky;
         top: 0;
         z-index: 10;
-        background: #dfe4ea;
-        color: #2d3436;
-        font-weight: 600;
-        padding: 10px;
+        background: #00956e !important;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 8px 6px;
         text-align: center;
-        border-bottom: 2px solid #b2bec3;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
     }
 
     #building_table table tbody td {
-        padding: 10px;
-        border-bottom: 1px solid #ecf0f1;
+        padding: 8px 6px;
+        font-size: 12px;
         text-align: center;
-        color: #2d3436;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    #building_table table tbody tr:last-child td {
+        border-bottom: none;
     }
 
     #building_table table tbody tr:nth-child(even) {
-        background-color: rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.1) !important;
     }
 
     #building_table table tbody tr:hover {
-        background-color: rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.2) !important;
     }
+
 
     /* Map styling */
-    #map, #map > div {
+    #map {
         height: 100% !important;
+        overflow: hidden !important;
     }
-
+    #map > div,
+    #map .widget-subarea,
     #map .js-plotly-plot,
     #map .plot-container,
     #map .svg-container {
         height: 100% !important;
+        overflow: hidden !important;
     }
               
         /* AI Explorer layout */
@@ -181,32 +203,37 @@ app_ui = ui.page_fillable(
                             """
                         ),
 
-                        ui.card(
+                        ui.div(
                             ui.h4(
                                 "Buildings Summary",
-                                style="text-align: center; font-weight: 600; color: #ffffff;"
+                                style="text-align: center; font-weight: 700; color: #ffffff; letter-spacing: 0.01em; margin: 0 0 10px 0;"
                             ),
                             ui.div(
                                 ui.output_table("building_table"),
                                 style="""
                                     width: 100%;
-                                    max-height: 320px;
                                     overflow-y: auto;
+                                    overflow-x: hidden;
                                     padding: 0;
                                     border-radius: 12px;
-                                    background-color: transparent;
+                                    background: transparent !important;
+                                    border: none !important;
+                                    box-shadow: none !important;
+                                    flex: 1 1 0;
+                                    min-height: 0;
                                 """
                             ),
                             style="""
                                 border-radius: 15px;
-                                box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-                                background: #777a7f;
-                                border: 1px solid #dfe6e9;
+                                background: linear-gradient(135deg, #00b894, #00896b);
+                                box-shadow: 0 6px 20px rgba(0,184,148,0.25);
                                 display: flex;
                                 flex-direction: column;
-                                align-items: stretch;
-                                flex-grow: 1;
-                                padding: 12px;
+                                flex: 1 1 0;
+                                min-height: 0;
+                                padding: 16px;
+                                overflow: hidden;
+                                box-sizing: border-box;
                             """
                         ),
 
@@ -216,24 +243,37 @@ app_ui = ui.page_fillable(
                             gap:15px;
                             flex:4;
                             height:100%;
+                            min-height:0;
                         """
                     ),
 
                     ui.card(
-                        ui.h4("Map"),
                         ui.p(
-                            "Tip: Use the box-select or lasso tool (toolbar top-right of map) "
-                            "to filter the cards and table to a specific area.",
-                            class_="map-hint"
+                            "Tip: Use box-select or lasso (toolbar top-right) to filter by area.",
+                            style="font-size:11px; color:#6c5ce7; margin:0 0 3px 0; padding:0; line-height:0.2; font-weight:500;"
                         ),
                         ui.div(
                             output_widget("map"),
-                            style="flex-grow:1; height:100%;"
+                            style="""
+                                flex: 1 1 0;
+                                min-height: 0;
+                                height: 0;
+                                overflow: hidden;
+                                margin: 0;
+                                padding: 0;
+                                border-radius: 10px;
+                            """
                         ),
                         style="""
-                            display:flex;
-                            flex-direction:column;
-                            flex:8;
+                            display: flex;
+                            flex-direction: column;
+                            flex: 8;
+                            overflow: hidden;
+                            padding: 8px 8px 0 8px;
+                            margin: 0;
+                            background: linear-gradient(160deg, #f8f6ff 0%, #eef9f6 100%);
+                            border: 1.5px solid #d4ceff;
+                            box-shadow: 0 6px 20px rgba(108,92,231,0.1);
                         """
                     ),
 
@@ -243,6 +283,7 @@ app_ui = ui.page_fillable(
                         gap:20px;
                         height:700px;
                         align-items:stretch;
+                        box-sizing: border-box;
                     """
                 )
             )
