@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 from shiny import reactive, render, ui
 from shinywidgets import render_plotly
 
-from .data_load import get_filtered_data, qc, data_pipeline
+from data_load import get_filtered_data, qc, data_pipeline
 
 # defining logic and reactivity
 def server(input, output, session):
