@@ -1,12 +1,10 @@
 # DSCI-532_2026_19_van-housing
 
-[![License](https://img.shields.io/github/license/UBC-MDS/DSCI-532_2026_19_van-housing)](LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/commits/main)
-[![Open Issues](https://img.shields.io/github/issues/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/issues)
-[![Repo Size](https://img.shields.io/github/repo-size/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing)
-[![Shiny for Python](https://img.shields.io/badge/Shiny-for%20Python-3776AB?logo=python&logoColor=white)](https://shiny.posit.co/py/)
-[![Posit Connect Cloud](https://img.shields.io/badge/Deployed%20on-Posit%20Connect%20Cloud-75AADB)](https://connect.posit.cloud/)
-[![UBC MDS](https://img.shields.io/badge/UBC-MDS-blueviolet)](https://masterdatascience.ubc.ca/)
+| | | |
+|:---:|:---:|:---:|
+| [![License](https://img.shields.io/github/license/UBC-MDS/DSCI-532_2026_19_van-housing)](LICENSE) | [![Last Commit](https://img.shields.io/github/last-commit/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/commits/main) | [![Open Issues](https://img.shields.io/github/issues/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/issues) |
+| [![Repo Size](https://img.shields.io/github/repo-size/UBC-MDS/DSCI-532_2026_19_van-housing)](https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing) | [![Shiny for Python](https://img.shields.io/badge/Shiny-for%20Python-3776AB?logo=python&logoColor=white)](https://shiny.posit.co/py/) | [![Posit Connect Cloud](https://img.shields.io/badge/Deployed%20on-Posit%20Connect%20Cloud-75AADB)](https://connect.posit.cloud/) |
+| [![UBC MDS](https://img.shields.io/badge/UBC-MDS-blueviolet)](https://masterdatascience.ubc.ca/) | [![Demo Video](https://img.shields.io/badge/Watch-Demo%20Video-red?logo=youtube)](https://youtu.be/646B0TKdOjM) | [![Live Dashboard](https://img.shields.io/badge/Live-Dashboard-brightgreen)](https://019ca11c-80e1-200e-f440-05e01724ec0a.share.connect.posit.cloud/) |
 
 ## Vancouver Non-Market Housing Dashboard
 
@@ -54,7 +52,7 @@ pip install -r requirements.txt
 ### Running the Dashboard Locally
 
 ```bash
-shiny run src/app.py
+shiny run --reload src/app.py
 ```
 
 The dashboard will be available at `http://localhost:8000`
@@ -65,12 +63,17 @@ The dashboard can be viewed online from the following links:
 - [Dev branch dashboard](https://019ca12b-70bc-0d29-8861-3aa67b7b1905.share.connect.posit.cloud/)  
 - [Main branch dashboard](https://019ca11c-80e1-200e-f440-05e01724ec0a.share.connect.posit.cloud/)
 
-## Running Tests
-```bash
-conda activate 532-gp19 # Activate conda environment
-playwright install      # Install playwright if required 
-pytest
-```
+## Testing & Quality Assurance
+This project uses `pytest` for unit testing logic and `Playwright` for E2E UI testing.
+
+### Prerequisites
+1. `pip install -r requirements.txt`
+2. `playwright install chromium`
+
+### Running the Suite
+To run all tests (Unit + UI), ensure the app is running in the background:
+1. Start the app: `shiny run src/app.py`
+2. Run tests: `pytest` (Make sure to open a browser and go to `localhost:8000`)
 
 ## Contributing
 
