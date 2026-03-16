@@ -41,6 +41,18 @@ Our final layout is similar to our sketch. The difference is we removed a few fi
 
 ## [0.4.0] - 2026-03-17
 
+### Release Highlight: [Box or Lasso Selection Tool for filtering]
+
+**Description:**
+A lasso/box selection tool is impletmented on the map. 
+Users can now use the box selection tool to select an area as a filtering tool. 
+The rest of the dashboard will also be filtered based on the selection of the lasso selection box
+
+- **Option chosen:** D
+- **PR:** https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/pull/82
+- **Why this option over the others:** The ability to select what you directly see on the map is an important features for map users. For example, you want to live near the Vancouver Harbour, you can see it, but you don't know what it is called. The tool now allows users to circle out the exact area they want to filter out, regardless of finding out the neighbourhood name.
+- **Feature prioritization issue link:** https://github.com/UBC-MDS/DSCI-532_2026_19_van-housing/issues/78
+
 ### Reflection
 
 Tests
