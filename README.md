@@ -25,7 +25,9 @@ Users can filter projects by **clientele**, **bedrooms**, **accessibility**, and
 
 ## Demo
 
-Here is our Demo Video! 
+![Dashboard Demo](img/demo.gif)
+
+**Here is our Demo Video for extended details!!**
 ▶ https://youtu.be/646B0TKdOjM
 
 ## Getting Started
