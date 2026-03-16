@@ -44,11 +44,7 @@ conda env create -f environment.yml
 conda activate 532-gp19
 ```
 
-3. Install required packages from requirements.txt:
-```bash
-pip install -r requirements.txt
-```
-4. (Optional) Configure AI features:
+3. (Optional) Configure AI features:
 ```bash
 touch .env
 # Edit .env and add your Anthropic API key
