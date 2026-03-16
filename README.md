@@ -48,6 +48,13 @@ conda activate 532-gp19
 ```bash
 pip install -r requirements.txt
 ```
+4. (Optional) Configure AI features:
+```bash
+touch .env
+# Edit .env and add your Anthropic API key
+ANTHROPIC_API_KEY= Add_your_key
+MAPBOX_TOKEN= Add_your_key
+```
 
 ### Running the Dashboard Locally
 
@@ -67,12 +74,11 @@ The dashboard can be viewed online from the following links:
 This project uses `pytest` for unit testing logic and `Playwright` for E2E UI testing.
 
 ### Prerequisites
-1. `pip install -r requirements.txt`
-2. `playwright install chromium`
+`playwright install chromium`
 
 ### Running the Suite
 To run all tests (Unit + UI), ensure the app is running in the background:
-1. Start the app: `shiny run src/app.py`
+1. Start the app: `shiny run --reload app.py`
 2. Run tests: `pytest` (Make sure to open a browser and go to `localhost:8000`)
 
 ## Contributing
